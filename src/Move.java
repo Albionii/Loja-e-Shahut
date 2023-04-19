@@ -59,6 +59,19 @@ public class Move implements MouseListener, MouseMotionListener {
         }
     }
 
+    public void restartPreviousMove() {
+        if (clickedBlack){
+            labelBlackPieces[uB][vB].setBounds(savePositionForBlack[uB][vB].getXPosition()*100, savePositionForBlack[uB][vB].getYPosition()*100, 100, 100);
+            clickedBlack = false;
+            clickedWhite = true;
+        }else if (clickedWhite) {
+            labelWhitePieces[uW][vW].setBounds(savePositionForWhite[uW][vW].getXPosition()*100, savePositionForWhite[uW][vW].getYPosition()*100, 100, 100);
+            clickedWhite = false;
+            clickedBlack = true;
+        }
+    }
+
+
     public void pawn() {
 
         if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == (savePositionForBlack[uB][vB].getYPosition()+1) && clickedBlack) {
@@ -67,6 +80,7 @@ public class Move implements MouseListener, MouseMotionListener {
             savePositionForBlack[uB][vB].setXPosition(xPosition);
             savePositionForBlack[uB][vB].setYPosition(yPosition);
             clickedWhite = false;
+            clickedBlack = true;
         }
         else if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-1) && clickedWhite) {
             labelWhitePieces[uW][vW].setBounds(xPosition*100, yPosition*100, 100, 100);
@@ -74,7 +88,12 @@ public class Move implements MouseListener, MouseMotionListener {
             savePositionForWhite[uW][vW].setXPosition(xPosition);
             savePositionForWhite[uW][vW].setYPosition(yPosition);
             clickedBlack = false;
+            clickedWhite = true;
 
+        }
+        else {
+            restartPreviousMove();
+            System.out.println("clickedWhite : " + clickedWhite);
         }
     }
 
@@ -97,57 +116,6 @@ public class Move implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
-//        for (int i = 0; i < 2; i++) {
-//            for (int j = 0; j < 8; j++) {
-//
-//                if (e.getSource() == labelBlackPieces[i][j] ){
-//                    if (!clickedBlack) {
-//                        labelBlackPieces[i][j].setOpaque(true);
-//                        labelBlackPieces[i][j].setBackground(Color.red);
-//                        clickedBlack = true;
-////                            clickedWhite = false;
-//                        bOrw = 'b';
-//                        uB = i;
-//                        vB = j;
-//                        break;
-//                    }
-//                }
-//                if (e.getSource() == labelWhitePieces[i][j]){
-//                    if (!clickedWhite) {
-//                        labelWhitePieces[i][j].setOpaque(true);
-//                        labelWhitePieces[i][j].setBackground(Color.red);
-//                        clickedWhite = true;
-////                            clickedBlack = false;
-//                        bOrw = 'w';
-//                        uW = i;
-//                        vW = j;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-
-
-//        if (e.getSource() == boardLabel || e.getSource() == labelBlackPieces) {
-//            getPositionOfPiece(e.getX(), e.getY());
-//            if (clickedBlack) {
-//                switch (eachPieceName[uB][vB]){
-//                    case "P":
-//                        pawn();
-//                        break;
-//
-//                }
-//            }
-//            if (clickedWhite) {
-//                switch (eachPieceName[uW][vW]){
-//                    case "P":
-//                        pawn();
-//                        break;
-//
-//                }
-//            }
-//        }
 
     }
 
@@ -183,8 +151,8 @@ public class Move implements MouseListener, MouseMotionListener {
                         labelBlackPieces[i][j].setLocation(mouse.x - 50, mouse.y - 50);
                         xRelease = (int) Math.round((mouse.x-50)/100.0);
                         yRelease = (int) Math.round((mouse.y-50)/100.0);
-                        savePositionForBlack[i][j].setXPosition(xRelease);
-                        savePositionForBlack[i][j].setYPosition(yRelease);
+                        xPosition = xRelease;
+                        yPosition = yRelease;
 
 //                        System.out.println("xRelease " + xRelease);
 //                        System.out.println("yRelease " + yRelease);
@@ -192,11 +160,11 @@ public class Move implements MouseListener, MouseMotionListener {
                     }
                     if (e.getSource() == labelWhitePieces[i][j]){
                         Point mouse = boardLabel.getMousePosition();
-                        labelBlackPieces[i][j].setLocation(mouse.x - 50, mouse.y - 50);
+                        labelWhitePieces[i][j].setLocation(mouse.x - 50, mouse.y - 50);
                         xRelease = (int) Math.round((mouse.x-50)/100.0);
                         yRelease = (int) Math.round((mouse.y-50)/100.0);
-                        savePositionForWhite[i][j].setXPosition(xRelease);
-                        savePositionForWhite[i][j].setYPosition(yRelease);
+                        xPosition = xRelease;
+                        yPosition = yRelease;
 
 //                        System.out.println("xRelease " + xRelease);
 //                        System.out.println("yRelease " + yRelease);
@@ -211,16 +179,29 @@ public class Move implements MouseListener, MouseMotionListener {
     public void mouseReleased(MouseEvent e) {
         for (int i = 0; i < 2; i++){
             for (int j = 0; j < 8; j++) {
-                if (e.getSource() == labelBlackPieces[i][j]){
-                    uB = i;
-                    vB = j;
-                    mousePressed = false;
-                    switch (eachPieceName[i][j]){
-                        case "P":
-                            pawn();
-                            break;
+                if (clickedBlack && mousePressed) {
+                    if (e.getSource() == labelBlackPieces[i][j]){
+                        uB = i;
+                        vB = j;
+                        mousePressed = false;
+                        switch (eachPieceName[i][j]) {
+                            case "P":
+                                pawn();
+                                break;
+                        }
                     }
-
+                }
+                if (clickedWhite && mousePressed) {
+                    if (e.getSource() == labelWhitePieces[i][j]){
+                        uW = i;
+                        vW = j;
+                        mousePressed = false;
+                        switch (eachPieceName[i][j]) {
+                            case "P":
+                                pawn();
+                                break;
+                        }
+                    }
                 }
             }
         }
