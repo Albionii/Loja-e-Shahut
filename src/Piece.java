@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Piece {
     private JLayeredPane panel;
@@ -66,6 +67,7 @@ public class Piece {
                 for (int j = 0; j < 8; j++) {
                     Image image = blackPieces[i][j].getScaledInstance(100, 100, Image.SCALE_SMOOTH);
                     labelBlackPieces[i][j] = new JLabel(new ImageIcon(image));
+
                     labelBlackPieces[i][j].setBounds(j*100, i*100, 100, 100);
                     Image image1 = whitePieces[i][j].getScaledInstance(100, 100, Image.SCALE_SMOOTH);
                     labelWhitePieces[i][j] = new JLabel(new ImageIcon(image1));

@@ -11,14 +11,6 @@ public class SavePosition {
         this.whiteOrBlack = whiteOrBlack;
     }
 
-//    public int getLabelX(){
-//        return labelX;
-//    }
-//    public int getLabelY(){
-//        return labelY;
-//    }
-//
-
     public int getXPosition(){
         return xPosition;
     }
@@ -32,4 +24,5 @@ public class SavePosition {
     public void setYPosition(int y) {
         yPosition = y;
     }
+
 }

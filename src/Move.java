@@ -17,6 +17,7 @@ public class Move implements MouseListener, MouseMotionListener {
     private SavePosition[][] savePositionForWhite,savePositionForBlack;
     private char bOrw;
     int xRelease, yRelease;
+    private boolean isPawnInFirstRank = true;
 
     public Move(JLabel[][] labelWhitePieces, JLabel[][] labelBlackPieces, JLabel boardLabel, SavePosition[][] savePositionForWhite, SavePosition[][] savePositionForBlack) {
         this.labelWhitePieces = labelWhitePieces;
@@ -40,10 +41,7 @@ public class Move implements MouseListener, MouseMotionListener {
         boardLabel.addMouseListener(this);
     }
 
-    public void getPositionOfPiece(int xPos, int yPos) {
-        xPosition = xPos / 100;
-        yPosition = yPos / 100;
-    }
+
 
     public void setPieceName() {
         eachPieceName[0][0] = "R";
@@ -71,43 +69,141 @@ public class Move implements MouseListener, MouseMotionListener {
         }
     }
 
-
-    public void pawn() {
-
-        if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == (savePositionForBlack[uB][vB].getYPosition()+1) && clickedBlack) {
-            labelBlackPieces[uB][vB].setBounds(xPosition*100, yPosition*100, 100, 100);
-            labelBlackPieces[uB][vB].setOpaque(false);
-            savePositionForBlack[uB][vB].setXPosition(xPosition);
-            savePositionForBlack[uB][vB].setYPosition(yPosition);
-            clickedWhite = false;
-            clickedBlack = true;
+    public boolean isPawnInFirstRank() {
+        if (savePositionForBlack[uB][vB].getYPosition() == 1) {
+            return true;
         }
-        else if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-1) && clickedWhite) {
-            labelWhitePieces[uW][vW].setBounds(xPosition*100, yPosition*100, 100, 100);
-            labelWhitePieces[uW][vW].setOpaque(false);
-            savePositionForWhite[uW][vW].setXPosition(xPosition);
-            savePositionForWhite[uW][vW].setYPosition(yPosition);
-            clickedBlack = false;
-            clickedWhite = true;
-
+        else if (savePositionForWhite[uW][vW].getYPosition() == 6) {
+            return true;
         }
-        else {
-            restartPreviousMove();
-            System.out.println("clickedWhite : " + clickedWhite);
-        }
+        return false;
     }
 
-    public void isThereAPiece(int xPos, int yPos) {
-        for (int i = 0; i < 2; i++ ) {
+
+
+    public void pawn() {
+        if (clickedBlack && canThePieceTake(savePositionForBlack[uB][vB], pieceInThatPosition(savePositionForBlack[uB][vB]))) {
+            updatePiecePozition(savePositionForBlack[uB][vB]);
+
+//            labelWhitePieces[pieceInThatPosition(savePositionForBlack[uB][vB]).labelY][pieceInThatPosition(savePositionForBlack[uB][vB]).labelX].setVisible(false);
+            labelWhitePieces[pieceInThatPosition(savePositionForBlack[uB][vB]).labelY][pieceInThatPosition(savePositionForBlack[uB][vB]).labelX].setBounds(900, 100, 100, 100);
+        }
+        else if (clickedWhite && canThePieceTake(savePositionForWhite[uW][vW], pieceInThatPosition(savePositionForWhite[uW][vW]))) {
+            updatePiecePozition(savePositionForWhite[uW][vW]);
+            labelBlackPieces[pieceInThatPosition(savePositionForWhite[uW][vW]).labelY][pieceInThatPosition(savePositionForWhite[uW][vW]).labelX].setVisible(false);
+//            labelBlackPieces[1][1].setBounds(900, 0, 100, 100);
+//            System.out.println(isThereAPiece(savePositionForBlack[1][1]));
+        }
+
+        else {
+
+
+
+
+        /*
+        * Shikon se pari cfare ngjyre eshte figura.
+        * Shikon nese figura ka levizje legale.
+        * Ne qofte se jo ktheje ne levizjen paraprake.
+        * Ne te kunderten levize aty.
+        * */
+
+        if (clickedBlack) {
+            if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == savePositionForBlack[uB][vB].getYPosition()+1) {
+                if(isThereAPiece(savePositionForBlack[uB][vB])){
+                    restartPreviousMove();
+                }
+                else{
+                    updatePiecePozition(savePositionForBlack[uB][vB]);
+                    labelBlackPieces[1][1].setBounds(900, 0, 100, 100);
+                }
+            }
+            else if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == savePositionForBlack[uB][vB].getYPosition()+2 && isPawnInFirstRank()){
+                updatePiecePozition(savePositionForBlack[uB][vB]);
+            }
+            else {
+                restartPreviousMove();
+            }
+        }
+        else if (clickedWhite) {
+            if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-1)) {
+                if (isThereAPiece(savePositionForWhite[uW][vW])){
+                    restartPreviousMove();
+                }
+                else{
+                    updatePiecePozition(savePositionForWhite[uW][vW]);
+                }
+            }
+            else if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-2) && isPawnInFirstRank()) {
+                updatePiecePozition(savePositionForWhite[uW][vW]);
+            }
+            else {
+                restartPreviousMove();
+            }
+
+        }
+    }
+    }
+
+
+
+
+    public void updatePiecePozition(SavePosition s) {
+        clickedWhite = s.whiteOrBlack != 'b';
+        clickedBlack = s.whiteOrBlack == 'b';
+        if (clickedBlack) {
+            labelBlackPieces[uB][vB].setBounds(xPosition*100, yPosition*100, 100, 100);
+        }
+        else if (clickedWhite) {
+            labelWhitePieces[uW][vW].setBounds(xPosition*100, yPosition*100, 100, 100);
+        }
+        s.setXPosition(xPosition);
+        s.setYPosition(yPosition);
+//        System.out.println("x : " + s.getXPosition());
+//        System.out.println("y : " + s.getYPosition());
+    }
+
+    public boolean canThePieceTake(SavePosition s1, SavePosition s2) {
+        switch (eachPieceName[s1.labelY][s1.labelX]){
+            case "P":
+                boolean arePawnsInRightColor = s1.whiteOrBlack != s2.whiteOrBlack;
+                boolean arePawnsInRightXPos = s2.getXPosition() - s1.getXPosition() == 1 || s2.getXPosition() - s1.getXPosition() == -1;
+                boolean arePawnsInRightYPos = s2.getYPosition() - s1.getYPosition() == 1 || s2.getYPosition() - s1.getYPosition() == -1;
+                if (arePawnsInRightColor && arePawnsInRightXPos && arePawnsInRightYPos) {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    public SavePosition pieceInThatPosition (SavePosition s) {
+        for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
-                if (labelBlackPieces[i][j].getX()/100 == xPos && labelBlackPieces[i][j].getX()/100 == yPos) {
-                    System.out.println("Eshte nje figure qaty");
-                    labelBlackPieces[i][j].setOpaque(true);
-                    labelBlackPieces[i][j].setBackground(Color.green);
+                if (savePositionForBlack[i][j].getXPosition() == xPosition && savePositionForBlack[i][j].getYPosition() == yPosition && savePositionForBlack[i][j] != s){
+                    return savePositionForBlack[i][j];
+                }
+                else if (savePositionForWhite[i][j].getXPosition() == xPosition && savePositionForWhite[i][j].getYPosition() == yPosition && savePositionForWhite[i][j] != s){
+                    return savePositionForWhite[i][j];
                 }
             }
         }
+        return s;
+    }
 
+
+
+    public boolean isThereAPiece(SavePosition savePosition) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (savePositionForBlack[i][j].getXPosition() == xPosition && savePositionForBlack[i][j].getYPosition() == yPosition && savePositionForBlack[i][j] != savePosition){
+                    return true;
+                }
+                else if (savePositionForWhite[i][j].getXPosition() == xPosition && savePositionForWhite[i][j].getYPosition() == yPosition && savePositionForWhite[i][j] != savePosition){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -127,15 +223,16 @@ public class Move implements MouseListener, MouseMotionListener {
                     mousePressed = true;
                     clickedBlack = true;
                     clickedWhite = false;
-                    labelBlackPieces[i][j].setOpaque(false);
+                    uB = i;
+                    vB = j;
                 }
                 if (e.getSource() == labelWhitePieces[i][j] && !clickedWhite){
                     mousePressed = true;
                     clickedWhite = true;
                     clickedBlack = false;
-                    labelWhitePieces[i][j].setOpaque(false);
+                    uW = i;
+                    vW = j;
                 }
-
             }
         }
     }
@@ -144,64 +241,44 @@ public class Move implements MouseListener, MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (mousePressed) {
-            for (int i = 0; i < 2; i++){
-                for (int j = 0; j < 8; j++) {
-                    if (e.getSource() == labelBlackPieces[i][j]){
-                        Point mouse = boardLabel.getMousePosition();
-                        labelBlackPieces[i][j].setLocation(mouse.x - 50, mouse.y - 50);
-                        xRelease = (int) Math.round((mouse.x-50)/100.0);
-                        yRelease = (int) Math.round((mouse.y-50)/100.0);
-                        xPosition = xRelease;
-                        yPosition = yRelease;
-
-//                        System.out.println("xRelease " + xRelease);
-//                        System.out.println("yRelease " + yRelease);
-
-                    }
-                    if (e.getSource() == labelWhitePieces[i][j]){
-                        Point mouse = boardLabel.getMousePosition();
-                        labelWhitePieces[i][j].setLocation(mouse.x - 50, mouse.y - 50);
-                        xRelease = (int) Math.round((mouse.x-50)/100.0);
-                        yRelease = (int) Math.round((mouse.y-50)/100.0);
-                        xPosition = xRelease;
-                        yPosition = yRelease;
-
-//                        System.out.println("xRelease " + xRelease);
-//                        System.out.println("yRelease " + yRelease);
-
-                    }
-                }
+            if (e.getSource() == labelBlackPieces[uB][vB]){
+                Point mouse = boardLabel.getMousePosition();
+                labelBlackPieces[uB][vB].setLocation(mouse.x - 50, mouse.y - 50);
+                xRelease = (int) Math.round((mouse.x-50)/100.0);
+                yRelease = (int) Math.round((mouse.y-50)/100.0);
+                xPosition = xRelease;
+                yPosition = yRelease;
+            }
+            if (e.getSource() == labelWhitePieces[uW][vW]){
+                Point mouse = boardLabel.getMousePosition();
+                labelWhitePieces[uW][vW].setLocation(mouse.x - 50, mouse.y - 50);
+                xRelease = (int) Math.round((mouse.x-50)/100.0);
+                yRelease = (int) Math.round((mouse.y-50)/100.0);
+                xPosition = xRelease;
+                yPosition = yRelease;
             }
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        for (int i = 0; i < 2; i++){
-            for (int j = 0; j < 8; j++) {
-                if (clickedBlack && mousePressed) {
-                    if (e.getSource() == labelBlackPieces[i][j]){
-                        uB = i;
-                        vB = j;
-                        mousePressed = false;
-                        switch (eachPieceName[i][j]) {
-                            case "P":
-                                pawn();
-                                break;
-                        }
-                    }
+        if (clickedBlack && mousePressed) {
+            if (e.getSource() == labelBlackPieces[uB][vB]){
+                mousePressed = false;
+                switch (eachPieceName[uB][vB]) {
+                    case "P":
+                        pawn();
+                        break;
                 }
-                if (clickedWhite && mousePressed) {
-                    if (e.getSource() == labelWhitePieces[i][j]){
-                        uW = i;
-                        vW = j;
-                        mousePressed = false;
-                        switch (eachPieceName[i][j]) {
-                            case "P":
-                                pawn();
-                                break;
-                        }
-                    }
+            }
+        }
+        if (clickedWhite && mousePressed) {
+            if (e.getSource() == labelWhitePieces[uW][vW]){
+                mousePressed = false;
+                switch (eachPieceName[uW][vW]) {
+                    case "P":
+                        pawn();
+                        break;
                 }
             }
         }
