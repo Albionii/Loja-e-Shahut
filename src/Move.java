@@ -3,21 +3,20 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.sql.Time;
 
 public class Move implements MouseListener, MouseMotionListener {
 
-    private JLabel[][] labelWhitePieces;
-    private JLabel[][] labelBlackPieces;
-    private JLabel boardLabel;
+    private final JLabel[][] labelWhitePieces;
+    private final JLabel[][] labelBlackPieces;
+    final private JLabel boardLabel;
     private boolean clickedBlack, clickedWhite, mousePressed;
     private int xPosition, yPosition;
     private int uB, vB, uW, vW;
-    private String[][] eachPieceName = new String[2][8];
-    private SavePosition[][] savePositionForWhite,savePositionForBlack;
+    private final String[][] eachPieceName = new String[2][8];
+    private final SavePosition[][] savePositionForWhite;
+    private final SavePosition[][] savePositionForBlack;
     private char bOrw;
     int xRelease, yRelease;
-    private boolean isPawnInFirstRank = true;
 
     public Move(JLabel[][] labelWhitePieces, JLabel[][] labelBlackPieces, JLabel boardLabel, SavePosition[][] savePositionForWhite, SavePosition[][] savePositionForBlack) {
         this.labelWhitePieces = labelWhitePieces;
@@ -29,6 +28,11 @@ public class Move implements MouseListener, MouseMotionListener {
         setPieceName();
     }
 
+
+    /**
+     * Per te bere te gjitha labels funksionale me ane te mausit, kam krijuar kete metode
+     * qe therret metodat addMouseListener() and addMouseMotionListener()
+     */
     public void addListenerToLabels() {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
@@ -42,7 +46,10 @@ public class Move implements MouseListener, MouseMotionListener {
     }
 
 
-
+    /**
+     * Krijon nje varg i cili permban inicialet e figurave te shahut ne menyre qe t'i qasem
+     * kur kam nevoje.
+     */
     public void setPieceName() {
         eachPieceName[0][0] = "R";
         eachPieceName[0][1] = "N";
@@ -57,6 +64,10 @@ public class Move implements MouseListener, MouseMotionListener {
         }
     }
 
+
+    /**
+     * Nese lojtari luan nje levizje jo legale te figures, kjo metode e therret ate ne poziten paraprake.
+     */
     public void restartPreviousMove() {
         if (clickedBlack){
             labelBlackPieces[uB][vB].setBounds(savePositionForBlack[uB][vB].getXPosition()*100, savePositionForBlack[uB][vB].getYPosition()*100, 100, 100);
@@ -69,6 +80,14 @@ public class Move implements MouseListener, MouseMotionListener {
         }
     }
 
+
+    /**
+     * Kjo metode shikon nese kane mbetur me piuna ne rreshtin e tyre fillestar. Kjo sepse nje piun ne hapin e pare
+     * mund t'i bej dy levizje ose vetem nje, ndersa pas asaj levizjeje cdohere leviz vetem nje here.
+     * @return true nese piuni eshte ne rreshtin fillestar.
+     * false nese piuni nuk eshte ne ate rresht.
+     *
+     */
     public boolean isPawnInFirstRank() {
         if (savePositionForBlack[uB][vB].getYPosition() == 1) {
             return true;
@@ -80,19 +99,18 @@ public class Move implements MouseListener, MouseMotionListener {
     }
 
 
-
+    /**
+     * Kjo eshte metoda themelore per levizjen e piunit. Kjo metode akoma eshte ne perpunim por ajo teston nese piuni
+     * mund te bej levizje, nese eshte legale dhe nese mund te marre ndonje figure.
+     */
     public void pawn() {
         if (clickedBlack && canThePieceTake(savePositionForBlack[uB][vB], pieceInThatPosition(savePositionForBlack[uB][vB]))) {
             updatePiecePozition(savePositionForBlack[uB][vB]);
-
-//            labelWhitePieces[pieceInThatPosition(savePositionForBlack[uB][vB]).labelY][pieceInThatPosition(savePositionForBlack[uB][vB]).labelX].setVisible(false);
             labelWhitePieces[pieceInThatPosition(savePositionForBlack[uB][vB]).labelY][pieceInThatPosition(savePositionForBlack[uB][vB]).labelX].setBounds(900, 100, 100, 100);
         }
         else if (clickedWhite && canThePieceTake(savePositionForWhite[uW][vW], pieceInThatPosition(savePositionForWhite[uW][vW]))) {
             updatePiecePozition(savePositionForWhite[uW][vW]);
             labelBlackPieces[pieceInThatPosition(savePositionForWhite[uW][vW]).labelY][pieceInThatPosition(savePositionForWhite[uW][vW]).labelX].setVisible(false);
-//            labelBlackPieces[1][1].setBounds(900, 0, 100, 100);
-//            System.out.println(isThereAPiece(savePositionForBlack[1][1]));
         }
 
         else {
@@ -145,23 +163,30 @@ public class Move implements MouseListener, MouseMotionListener {
     }
 
 
-
-
+    /**
+     * Ben perditesimin e pozites se figures. Kjo metode thirret nga metoda pawn().
+     * @param s Si paramater ka klasen SavesPosition qe ruan vlerat per poziten e figures, ngjyren etj.
+     */
     public void updatePiecePozition(SavePosition s) {
         clickedWhite = s.whiteOrBlack != 'b';
         clickedBlack = s.whiteOrBlack == 'b';
         if (clickedBlack) {
             labelBlackPieces[uB][vB].setBounds(xPosition*100, yPosition*100, 100, 100);
         }
-        else if (clickedWhite) {
+        else {
             labelWhitePieces[uW][vW].setBounds(xPosition*100, yPosition*100, 100, 100);
         }
         s.setXPosition(xPosition);
         s.setYPosition(yPosition);
-//        System.out.println("x : " + s.getXPosition());
-//        System.out.println("y : " + s.getYPosition());
     }
 
+
+    /**
+     * Shikon nese figura mund te marre figuren tjeter ne qofte se e ka rradhen. Kerkohen dy figura si parametra.
+     * @param s1 Figura e pare.
+     * @param s2 Figura e dyte.
+     * @return true nese figura mund te mirret dhe false ne te kunderten.
+     */
     public boolean canThePieceTake(SavePosition s1, SavePosition s2) {
         switch (eachPieceName[s1.labelY][s1.labelX]){
             case "P":
@@ -176,6 +201,11 @@ public class Move implements MouseListener, MouseMotionListener {
         return false;
     }
 
+    /**
+     * Ne ate figure qe duam ta marrim, gjen se cila eshte ajo.
+     * @param s Figura me te cilen e bejme drag and drop.
+     * @return Figura te cilen e kemi bere drop dhe duam ta marrim.
+     */
     public SavePosition pieceInThatPosition (SavePosition s) {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
@@ -191,7 +221,12 @@ public class Move implements MouseListener, MouseMotionListener {
     }
 
 
-
+    /**
+     * Shikon nese ne ate pozite jane dy figura, pra nese eshte lejuar marrja e figures. Metoda e perjashton figuren qe e leviz perdoruesi
+     * andaj ne te vertete teston vetem nese ne poziten qe duam ekziston ndonje figure.
+     * @param savePosition Figura qe e testojme ose e bejme drag and drop.
+     * @return true nese jane dy figura mbi njera-tjetren dhe false ne te kunderten.
+     */
     public boolean isThereAPiece(SavePosition savePosition) {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
@@ -215,6 +250,10 @@ public class Move implements MouseListener, MouseMotionListener {
 
     }
 
+    /**
+     * Vepron se cfare duhet ndodh me shtypjen e tastit ne ndonje figure te shahut.
+     * @param e the event to be processed
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         for (int i = 0; i < 2; i++){
@@ -237,13 +276,17 @@ public class Move implements MouseListener, MouseMotionListener {
         }
     }
 
-
+    /**
+     * Me ane te kesaj metode mundesohet drag i te gjitha figurave.
+     * @param e the event to be processed
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         if (mousePressed) {
             if (e.getSource() == labelBlackPieces[uB][vB]){
                 Point mouse = boardLabel.getMousePosition();
                 labelBlackPieces[uB][vB].setLocation(mouse.x - 50, mouse.y - 50);
+                //xRelease eshte vetem vlere prej 0 deri ne 7 sipas formules se meposhtme kjo mundeson qe ta dime se ne cilen kuti ndodhet figura gjate levizjes.
                 xRelease = (int) Math.round((mouse.x-50)/100.0);
                 yRelease = (int) Math.round((mouse.y-50)/100.0);
                 xPosition = xRelease;
@@ -260,6 +303,10 @@ public class Move implements MouseListener, MouseMotionListener {
         }
     }
 
+    /**
+     * Kjo eshte metoda qe e mundeson drop qe behet me leshimin e tastit te majte.
+     * @param e the event to be processed
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         if (clickedBlack && mousePressed) {
