@@ -18,6 +18,8 @@ public class Move implements MouseListener, MouseMotionListener {
     private char bOrw;
     int xRelease, yRelease;
 
+    public boolean wasPieceTaken = false;
+
     public Move(JLabel[][] labelWhitePieces, JLabel[][] labelBlackPieces, JLabel boardLabel, SavePosition[][] savePositionForWhite, SavePosition[][] savePositionForBlack) {
         this.labelWhitePieces = labelWhitePieces;
         this.labelBlackPieces = labelBlackPieces;
@@ -74,7 +76,7 @@ public class Move implements MouseListener, MouseMotionListener {
             clickedBlack = false;
             clickedWhite = true;
         }else if (clickedWhite) {
-            labelWhitePieces[uW][vW].setBounds(savePositionForWhite[uW][vW].getXPosition()*100, savePositionForWhite[uW][vW].getYPosition()*100, 100, 100);
+            labelWhitePieces[uW][vW].setBounds(savePositionForWhite[uW][vW].getXPosition()*100, (savePositionForWhite[uW][vW].getYPosition())*100, 100, 100);
             clickedWhite = false;
             clickedBlack = true;
         }
@@ -89,11 +91,15 @@ public class Move implements MouseListener, MouseMotionListener {
      *
      */
     public boolean isPawnInFirstRank() {
-        if (savePositionForBlack[uB][vB].getYPosition() == 1) {
-            return true;
+        if (clickedBlack) {
+            if (savePositionForBlack[uB][vB].getYPosition() == 1) {
+                return true;
+            }
         }
-        else if (savePositionForWhite[uW][vW].getYPosition() == 6) {
-            return true;
+        else if (clickedWhite) {
+            if (savePositionForWhite[uW][vW].getYPosition() == 6) {
+                return true;
+            }
         }
         return false;
     }
@@ -104,55 +110,116 @@ public class Move implements MouseListener, MouseMotionListener {
      * mund te bej levizje, nese eshte legale dhe nese mund te marre ndonje figure.
      */
     public void pawn() {
+
+
+        // Ketu eshte kodi kur nje piun diagonalisht e merr nje piun te kundershtarit.
+
+
         if (clickedBlack && canThePieceTake(savePositionForBlack[uB][vB], pieceInThatPosition(savePositionForBlack[uB][vB]))) {
             updatePiecePozition(savePositionForBlack[uB][vB]);
             labelWhitePieces[pieceInThatPosition(savePositionForBlack[uB][vB]).labelY][pieceInThatPosition(savePositionForBlack[uB][vB]).labelX].setBounds(900, 100, 100, 100);
+            savePositionForWhite[pieceInThatPosition(savePositionForBlack[uB][vB]).labelY][pieceInThatPosition(savePositionForBlack[uB][vB]).labelX].setXPosition(9);
         }
         else if (clickedWhite && canThePieceTake(savePositionForWhite[uW][vW], pieceInThatPosition(savePositionForWhite[uW][vW]))) {
             updatePiecePozition(savePositionForWhite[uW][vW]);
-            labelBlackPieces[pieceInThatPosition(savePositionForWhite[uW][vW]).labelY][pieceInThatPosition(savePositionForWhite[uW][vW]).labelX].setVisible(false);
+            labelBlackPieces[pieceInThatPosition(savePositionForWhite[uW][vW]).labelY][pieceInThatPosition(savePositionForWhite[uW][vW]).labelX].setBounds(900, 100, 100, 100);
+            savePositionForBlack[pieceInThatPosition(savePositionForWhite[uW][vW]).labelY][pieceInThatPosition(savePositionForWhite[uW][vW]).labelX].setXPosition(9);
         }
-
         else {
 
+            /*
+            * Shikon se pari cfare ngjyre eshte figura.
+            * Shikon nese figura ka levizje legale.
+            * Ne qofte se jo ktheje ne levizjen paraprake.
+            * Ne te kunderten levize aty.
+            * */
 
-
-
-        /*
-        * Shikon se pari cfare ngjyre eshte figura.
-        * Shikon nese figura ka levizje legale.
-        * Ne qofte se jo ktheje ne levizjen paraprake.
-        * Ne te kunderten levize aty.
-        * */
-
-        if (clickedBlack) {
-            if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == savePositionForBlack[uB][vB].getYPosition()+1) {
-                if(isThereAPiece(savePositionForBlack[uB][vB])){
+            if (clickedBlack) {
+                if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == savePositionForBlack[uB][vB].getYPosition()+1) {
+                    if(isThereAPiece(savePositionForBlack[uB][vB])){
+                        restartPreviousMove();
+                    }
+                    else{
+                        updatePiecePozition(savePositionForBlack[uB][vB]);
+                    }
+                }
+                else if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == (savePositionForBlack[uB][vB].getYPosition()+2) && isPawnInFirstRank()){
+                    if(isThereAPiece(savePositionForBlack[uB][vB])){
+                        restartPreviousMove();
+                    }
+                    else{
+                        updatePiecePozition(savePositionForBlack[uB][vB]);
+                    }
+                }
+                else {
                     restartPreviousMove();
                 }
-                else{
-                    updatePiecePozition(savePositionForBlack[uB][vB]);
-                    labelBlackPieces[1][1].setBounds(900, 0, 100, 100);
+            }
+            else if (clickedWhite) {
+                if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-1)) {
+                    if (isThereAPiece(savePositionForWhite[uW][vW])){
+                        restartPreviousMove();
+                    }
+                    else{
+                        updatePiecePozition(savePositionForWhite[uW][vW]);
+                    }
+                }
+                else if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-2) && isPawnInFirstRank()) {
+                    if (isThereAPiece(savePositionForWhite[uW][vW])){
+                        restartPreviousMove();
+                    }
+                    else{
+                        updatePiecePozition(savePositionForWhite[uW][vW]);
+                    }
+                }
+                else {
+                    restartPreviousMove();
                 }
             }
-            else if (xPosition == savePositionForBlack[uB][vB].getXPosition() && yPosition == savePositionForBlack[uB][vB].getYPosition()+2 && isPawnInFirstRank()){
-                updatePiecePozition(savePositionForBlack[uB][vB]);
+        }
+    }
+
+    public void rook() {
+
+
+        if (clickedBlack) {
+            if (xPosition == savePositionForBlack[uB][vB].getXPosition()){
+                if (isThereAPiece(savePositionForBlack[uB][vB])){
+                    restartPreviousMove();
+                }
+                else {
+                    updatePiecePozition(savePositionForBlack[uB][vB]);
+                }
+            }
+            else if (yPosition == savePositionForBlack[uB][vB].getYPosition()){
+                if (isThereAPiece(savePositionForBlack[uB][vB])){
+                    restartPreviousMove();
+                }
+                else {
+                    updatePiecePozition(savePositionForBlack[uB][vB]);
+                }
             }
             else {
                 restartPreviousMove();
             }
+
         }
         else if (clickedWhite) {
-            if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-1)) {
+            if (xPosition == savePositionForWhite[uW][vW].getXPosition()){
                 if (isThereAPiece(savePositionForWhite[uW][vW])){
                     restartPreviousMove();
                 }
-                else{
+                else {
                     updatePiecePozition(savePositionForWhite[uW][vW]);
                 }
             }
-            else if (xPosition == savePositionForWhite[uW][vW].getXPosition() && yPosition == ((savePositionForWhite[uW][vW].getYPosition())-2) && isPawnInFirstRank()) {
-                updatePiecePozition(savePositionForWhite[uW][vW]);
+            else if (yPosition == savePositionForWhite[uW][vW].getYPosition()){
+                if (isThereAPiece(savePositionForWhite[uW][vW])){
+                    restartPreviousMove();
+                }
+                else {
+                    updatePiecePozition(savePositionForWhite[uW][vW]);
+                }
             }
             else {
                 restartPreviousMove();
@@ -160,7 +227,7 @@ public class Move implements MouseListener, MouseMotionListener {
 
         }
     }
-    }
+
 
 
     /**
@@ -168,13 +235,13 @@ public class Move implements MouseListener, MouseMotionListener {
      * @param s Si paramater ka klasen SavesPosition qe ruan vlerat per poziten e figures, ngjyren etj.
      */
     public void updatePiecePozition(SavePosition s) {
-        clickedWhite = s.whiteOrBlack != 'b';
         clickedBlack = s.whiteOrBlack == 'b';
+        clickedWhite = s.whiteOrBlack != 'b';
         if (clickedBlack) {
-            labelBlackPieces[uB][vB].setBounds(xPosition*100, yPosition*100, 100, 100);
+            labelBlackPieces[s.labelY][s.labelX].setBounds(xPosition*100, yPosition*100, 100, 100);
         }
         else {
-            labelWhitePieces[uW][vW].setBounds(xPosition*100, yPosition*100, 100, 100);
+            labelWhitePieces[s.labelY][s.labelX].setBounds(xPosition*100, yPosition*100, 100, 100);
         }
         s.setXPosition(xPosition);
         s.setYPosition(yPosition);
@@ -190,13 +257,19 @@ public class Move implements MouseListener, MouseMotionListener {
     public boolean canThePieceTake(SavePosition s1, SavePosition s2) {
         switch (eachPieceName[s1.labelY][s1.labelX]){
             case "P":
-                boolean arePawnsInRightColor = s1.whiteOrBlack != s2.whiteOrBlack;
-                boolean arePawnsInRightXPos = s2.getXPosition() - s1.getXPosition() == 1 || s2.getXPosition() - s1.getXPosition() == -1;
-                boolean arePawnsInRightYPos = s2.getYPosition() - s1.getYPosition() == 1 || s2.getYPosition() - s1.getYPosition() == -1;
-                if (arePawnsInRightColor && arePawnsInRightXPos && arePawnsInRightYPos) {
-                    return true;
+                if(s1.whiteOrBlack == 'w' && s2.whiteOrBlack == 'b') {
+                    boolean arePawnsInRightXPos = s2.getXPosition() - s1.getXPosition() == 1 || s2.getXPosition() - s1.getXPosition() == -1;
+                    boolean arePawnsInRightYPos = s2.getYPosition() - s1.getYPosition() == -1;
+                    return arePawnsInRightXPos && arePawnsInRightYPos;
                 }
-                break;
+                else if (s1.whiteOrBlack == 'b' && s2.whiteOrBlack == 'w'){
+                    boolean arePawnsInRightXPos = s2.getXPosition() - s1.getXPosition() == 1 || s2.getXPosition() - s1.getXPosition() == -1;
+                    boolean arePawnsInRightYPos = s2.getYPosition() - s1.getYPosition() == 1;
+                    return arePawnsInRightXPos && arePawnsInRightYPos;
+                }
+                else {
+                    return false;
+                }
         }
         return false;
     }
@@ -316,6 +389,9 @@ public class Move implements MouseListener, MouseMotionListener {
                     case "P":
                         pawn();
                         break;
+                    case "R":
+                        rook();
+                        break;
                 }
             }
         }
@@ -325,6 +401,9 @@ public class Move implements MouseListener, MouseMotionListener {
                 switch (eachPieceName[uW][vW]) {
                     case "P":
                         pawn();
+                        break;
+                    case "R":
+                        rook();
                         break;
                 }
             }
