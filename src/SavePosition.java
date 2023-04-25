@@ -12,17 +12,17 @@ public class SavePosition {
     }
 
     public int getXPosition(){
-        return xPosition;
+        return this.xPosition;
     }
     public int getYPosition(){
-        return yPosition;
+        return this.yPosition;
     }
 
     public void setXPosition(int x) {
-        xPosition = x;
+        this.xPosition = x;
     }
     public void setYPosition(int y) {
-        yPosition = y;
+        this.yPosition = y;
     }
 
 }

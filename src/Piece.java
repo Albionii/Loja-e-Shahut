@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class Piece {
@@ -26,39 +27,39 @@ public class Piece {
     public void drawPieces() {
         try {
 
-            blackPieces[0][0] = ImageIO.read(new File("src/Pieces/Black/Chess_rdt45.svg.png"));
-            blackPieces[0][1] = ImageIO.read(new File("src/Pieces/Black/Chess_ndt45.svg.png"));
-            blackPieces[0][2] = ImageIO.read(new File("src/Pieces/Black/Chess_bdt45.svg.png"));
-            blackPieces[0][3] = ImageIO.read(new File("src/Pieces/Black/Chess_qdt45.svg.png"));
-            blackPieces[0][4] = ImageIO.read(new File("src/Pieces/Black/Chess_kdt45.svg.png"));
-            blackPieces[0][5] = ImageIO.read(new File("src/Pieces/Black/Chess_bdt45.svg.png"));
-            blackPieces[0][6] = ImageIO.read(new File("src/Pieces/Black/Chess_ndt45.svg.png"));
-            blackPieces[0][7] = ImageIO.read(new File("src/Pieces/Black/Chess_rdt45.svg.png"));
-            blackPieces[1][0] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
-            blackPieces[1][1] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
-            blackPieces[1][2] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
-            blackPieces[1][3] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
-            blackPieces[1][4] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
-            blackPieces[1][5] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
-            blackPieces[1][6] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
-            blackPieces[1][7] = ImageIO.read(new File("src/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[0][0] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_rdt45.svg.png"));
+            blackPieces[0][1] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_ndt45.svg.png"));
+            blackPieces[0][2] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_bdt45.svg.png"));
+            blackPieces[0][3] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_qdt45.svg.png"));
+            blackPieces[0][4] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_kdt45.svg.png"));
+            blackPieces[0][5] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_bdt45.svg.png"));
+            blackPieces[0][6] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_ndt45.svg.png"));
+            blackPieces[0][7] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_rdt45.svg.png"));
+            blackPieces[1][0] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[1][1] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[1][2] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[1][3] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[1][4] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[1][5] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[1][6] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
+            blackPieces[1][7] = ImageIO.read(getClass().getResource("/Pieces/Black/Chess_pdt45.svg.png"));
 
-            whitePieces[0][0] = ImageIO.read(new File("src/Pieces/White/Chess_rlt45.svg.png"));
-            whitePieces[0][1] = ImageIO.read(new File("src/Pieces/White/Chess_nlt45.svg.png"));
-            whitePieces[0][2] = ImageIO.read(new File("src/Pieces/White/Chess_blt45.svg.png"));
-            whitePieces[0][3] = ImageIO.read(new File("src/Pieces/White/Chess_qlt45.svg.png"));
-            whitePieces[0][4] = ImageIO.read(new File("src/Pieces/White/Chess_klt45.svg.png"));
-            whitePieces[0][5] = ImageIO.read(new File("src/Pieces/White/Chess_blt45.svg.png"));
-            whitePieces[0][6] = ImageIO.read(new File("src/Pieces/White/Chess_nlt45.svg.png"));
-            whitePieces[0][7] = ImageIO.read(new File("src/Pieces/White/Chess_rlt45.svg.png"));
-            whitePieces[1][0] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
-            whitePieces[1][1] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
-            whitePieces[1][2] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
-            whitePieces[1][3] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
-            whitePieces[1][4] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
-            whitePieces[1][5] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
-            whitePieces[1][6] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
-            whitePieces[1][7] = ImageIO.read(new File("src/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[0][0] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_rlt45.svg.png"));
+            whitePieces[0][1] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_nlt45.svg.png"));
+            whitePieces[0][2] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_blt45.svg.png"));
+            whitePieces[0][3] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_qlt45.svg.png"));
+            whitePieces[0][4] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_klt45.svg.png"));
+            whitePieces[0][5] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_blt45.svg.png"));
+            whitePieces[0][6] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_nlt45.svg.png"));
+            whitePieces[0][7] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_rlt45.svg.png"));
+            whitePieces[1][0] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[1][1] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[1][2] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[1][3] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[1][4] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[1][5] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[1][6] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
+            whitePieces[1][7] = ImageIO.read(getClass().getResource("/Pieces/White/Chess_plt45.svg.png"));
 
 
 

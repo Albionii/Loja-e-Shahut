@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class Board {
     private JFrame frame;
@@ -23,7 +24,8 @@ public class Board {
         panel.setPreferredSize(new Dimension(800, 800));
         panel.setLayout(null);
         try {
-            boardImage = ImageIO.read(new File("src/Pieces/Chessboard480.svg.png"));
+            URL imageUrl = getClass().getResource("/Pieces/Chessboard480.svg.png");
+            boardImage = ImageIO.read(imageUrl);
             Image image = boardImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH);
             boardLabel = new JLabel(new ImageIcon(image));
             boardLabel.setBounds(0, 0, 800, 800);

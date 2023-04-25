@@ -5,6 +5,7 @@ public class Game {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Loja");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         frame.setLayout(new BorderLayout());
         Board board = new Board(frame);
         frame.setLocationRelativeTo(null);
