@@ -21,4 +21,4 @@ Bonus:
 Deadline:
 ---------
 
-Deri me 10 maj 2023.
+Deri me 10 qershor 2023.
